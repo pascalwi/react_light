@@ -6351,7 +6351,7 @@ nan@^2.12.1:
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.13.2.tgz#f51dc7ae66ba7d5d55e1e6d4d8092e802c9aefe7"
   integrity sha512-TghvYc72wlMGMVMluVo9WRJc0mB8KxxF/gZ4YYFy7V2ZQX9l7rgbPg7vjS9mt6U5HXODVFVI2bOduCzwOMv/lw==
 
-nan@^2.13.0:
+nan@^2.13.0, nan@^2.14.0:
   version "2.14.0"
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.14.0.tgz#7818f722027b2459a86f0295d434d1fc2336c52c"
   integrity sha512-INOFj37C7k3AfaNTtX8RhsTw7qRy7eLET14cROi9+5HAVbbHuIWUHEauBv5qT4Av2tWasiTY1Jw6puUNqRJXQg==
@@ -7035,6 +7035,14 @@ pify@^4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/pify/-/pify-4.0.1.tgz#4b2cd25c50d598735c50292224fd8c6df41e3231"
   integrity sha512-uB80kBFb/tfd68bVleG9T5GGsGPjJrLAUpR5PZIrhBnIaRTQRjqdJSsIKkOP6OAIFbj7GOrcudc5pNjZ+geV2g==
+
+pigpio@^1.2.3:
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/pigpio/-/pigpio-1.2.3.tgz#b358f6b169293e14c0593303b8ab1c492373cd8e"
+  integrity sha512-3ySsqR2Dxvl8p/vY1MMwF6dVYXTNnK4uuGaYy7gQvQ65GIOtiqpU4N4Ylq1MoKJbfXY9SJbW2PLhkprzQks3dA==
+  dependencies:
+    bindings "^1.5.0"
+    nan "^2.14.0"
 
 pinkie-promise@^2.0.0:
   version "2.0.1"

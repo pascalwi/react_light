@@ -6,14 +6,18 @@ import './App.css';
 
 class App extends React.Component {
 
-  state = {
-    endpoint: "192.168.178.65:4001"
-  }
+	constructor(){
+    super()    
+    this.socket = socketIO("192.168.178.65:4001")
+  }  
 
   handleSubmit = e =>{
     e.preventDefault()    
-    const socket = socketIO(this.state.endpoint)
-    socket.emit("toggle")    
+    this.socket.emit("toggle")    
+  }
+
+  handleInput = e => {
+    this.socket.emit("setBrightness", {brightness: e.target.value})    
   }
 
   render(){
@@ -21,6 +25,9 @@ class App extends React.Component {
       <div className="App">        
         <h1>Light Control</h1>
         <form onSubmit={this.handleSubmit}>
+        <div className="slidecontainer">
+          <input type="range" className="slider" min = "0" max = "255" onInput={this.handleInput}/>
+        </div>
         <button>toggle</button>
         </form>  
       </div>
