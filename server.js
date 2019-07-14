@@ -1,30 +1,29 @@
-const http = require("http")
-const express = require("express")
-const socketIO = require("socket.io")
-//const Gpio = require("onoff").Gpio
-const Gpio = require("pigpio").Gpio
-const index = require("./index")
+const http = require("http");
+const express = require("express");
+const socketIO = require("socket.io");
+const Gpio = require("pigpio").Gpio;
+const index = require("./index");
 
-const app = express()
-app.use(index)
+const app = express();
+app.use(index);
+const server = http.createServer(app);
 
-const server = http.createServer(app)
+const io = socketIO(server);
+var brightness = 0;
 
-const io = socketIO(server)
+LED = new Gpio(17, { mode: Gpio.OUTPUT });
 
-//LED = new Gpio (17, 'out')
-LED = new Gpio (17, {mode: Gpio.OUTPUT})
 io.on("connection", socket => {
-    socket.on("toggle", () => {
-        if (LED.readSync() === 0){
-            LED.writeSync(1)
-        } else {
-            LED.writeSync(0)
-        }
-    })
-    socket.on("setBrightness", (data) => {
-        LED.pwmWrite(data.brightness)        
-    })
-})
+  socket.emit("loadstate", { brightness: brightness });
 
-server.listen(4001, () => console.log("listening on port 4001"))
+  socket.on("handleChange", data => {
+    brightness = data.brightness;
+    LED.pwmWrite(data.brightness);
+  });
+
+  socket.on("mouseUp", data => {
+    io.emit("loadstate", { brightness: brightness });
+  });
+});
+
+server.listen(4001, () => console.log("listening on port 4001"));

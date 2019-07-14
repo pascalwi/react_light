@@ -1,37 +1,49 @@
-import React from 'react';
-import socketIO from "socket.io-client"
+import React from "react";
+import socketIO from "socket.io-client";
 
-import './App.css';
-
+import "./App.css";
 
 class App extends React.Component {
+  state = { brightness: 0 };
 
-	constructor(){
-    super()    
-    this.socket = socketIO("192.168.178.65:4001")
-  }  
-
-  handleSubmit = e =>{
-    e.preventDefault()    
-    this.socket.emit("toggle")    
+  componentDidMount() {
+    this.socket = socketIO("192.168.178.65:4001"); //establish socket
+    this.socket.on("loadstate", data => {
+      this.setState({ brightness: data.brightness });
+    }); // get initial brightness from server
   }
 
-  handleInput = e => {
-    this.socket.emit("setBrightness", {brightness: e.target.value})    
-  }
+  handleChange = e => {
+    this.socket.emit("handleChange", { brightness: e.target.value });
+    this.setState({ brightness: e.target.value });
+  }; // send adjusted brightness to server and set state
 
-  render(){
-    return(
-      <div className="App">        
-        <h1>Light Control</h1>
-        <form onSubmit={this.handleSubmit}>
-        <div className="slidecontainer">
-          <input type="range" className="slider" min = "0" max = "255" onInput={this.handleInput}/>
+  MouseUp = e => {
+    this.socket.emit("mouseUp");
+  };
+
+  render() {
+    return (
+      <div>
+        <div className="topbar">
+          <h1>Light Control</h1>
+          <p>Drag the slider to adjust brightness.</p>
         </div>
-        <button>toggle</button>
-        </form>  
+        <div className="slidecontainer">
+          <input
+            type="range"
+            className="slider"
+            min="0"
+            max="255"
+            onChange={this.handleChange}
+            onMouseUp={this.MouseUp}
+            onTouchEnd={this.MouseUp}
+            value={this.state.brightness}
+          />
+          <p>{Math.round(this.state.brightness / 2.55)}</p>
+        </div>
       </div>
-    )  
+    );
   }
 }
 
