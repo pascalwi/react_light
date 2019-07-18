@@ -1,70 +1,69 @@
-*{
-	margin: 0;
-	padding: 0 ;
-	box-sizing: border-box;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-body{
-	background: #8292ad;
+body {
+  background: #8292ad;
 }
 
 .topbar {
-	background: #34495e;
-	padding: 30px;
-	color:grey;
-	font-family: 'Asap', sans-serif;
-	text-align: center;
-	color: white;
+  background: #34495e;
+  padding: 30px;
+  color: grey;
+  font-family: "Asap", sans-serif;
+  text-align: center;
+  color: white;
 }
 
-.slider{
+.slider {
   -webkit-appearance: none;
   width: 100%;
   height: 15px;
   background: white;
   outline: none;
   opacity: 0.7;
-  -webkit-transition: .2s;
-  transition: opacity .2s;
+  -webkit-transition: 0.2s;
+  transition: opacity 0.2s;
   border-radius: 7px;
 }
 
-.slidecontainer{
+.slidecontainer {
   width: 80%;
   display: block;
   margin-left: auto;
   margin-right: auto;
-  margin-top:100px;  
+  margin-top: 30px;
 }
 
-.slidecontainer > p{
-	color: #34495e;
-	font-size: 40px;
-	font-weight: bold;
-	font-family: 'Asap', sans-serif;
-	text-align: center;
-	margin-top: 30px;
+.slidecontainer > p {
+  color: #34495e;
+  font-size: 20px;
+  font-weight: bold;
+  font-family: "Asap", sans-serif;
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .slider::-webkit-slider-thumb {
   -webkit-appearance: none;
-  appearance: none;  
+  appearance: none;
   width: 25px;
   height: 25px;
   border: 0;
   border-radius: 50%;
-  background:#e74c3c;
-  cursor: pointer;    
+  background: #e74c3c;
+  cursor: pointer;
 }
 
 .slider::-moz-range-thumb {
   width: 25px;
   height: 25px;
   background: #e74c3c;
-  cursor: pointer;  
+  cursor: pointer;
 }
 .App {
   text-align: center;
 }
-
-
