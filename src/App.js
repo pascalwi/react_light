@@ -33,7 +33,20 @@ class App extends React.Component {
   }; // tell server to update clients
 
   timer = e => {
-    this.socket.emit("timer", { timer: e.target.value });
+    if (e.target.value !== "0" && this.state.brightness === "0") {
+      this.setState({ brightness: "255" });
+    } else if (e.target.value === "0") {
+      this.setState({ brightness: "0" });
+    }
+
+    var time = e.target.value;
+
+    setTimeout(() => {
+      this.socket.emit("timer", {
+        timer: time,
+        brightness: this.state.brightness
+      });
+    }, 50);
   };
 
   render() {

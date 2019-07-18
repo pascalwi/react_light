@@ -9,13 +9,44 @@ app.use(index);
 const server = http.createServer(app);
 
 const io = socketIO(server);
-var brightness = 0;
-var minutes = 0;
 
 LED = new Gpio(17, { mode: Gpio.OUTPUT });
 
-oneMinute = counter => {
-  console.log(counter);
+var brightness = "0";
+var remainigTime;
+
+countdown = data => {
+  var remainingTime = data.timer;
+  var brightness = data.brightness;
+
+  console.log("bright node", brightness);
+  // instant off when draggin slider to zero
+  if (Number(remainingTime) < 1) {
+    LED.pwmWrite(0);
+  } else {
+    LED.pwmWrite(Number(brightness));
+  }
+
+  //clear previous intervalls if existant
+  if (typeof interval !== "undefined") {
+    clearInterval(interval);
+  }
+
+  interval = setInterval(() => {
+    remainingTime--;
+
+    if (Number(remainingTime) < 1) {
+      clearInterval(interval);
+      LED.pwmWrite(0);
+      io.emit("loadstate", { brightness: "0" });
+    }
+
+    if (remainingTime < 0) {
+      remainingTime = 0;
+    }
+
+    io.emit("updateTime", { timer: remainingTime });
+  }, 60000);
 };
 
 io.on("connection", socket => {
@@ -27,18 +58,7 @@ io.on("connection", socket => {
   });
 
   socket.on("timer", data => {
-    var remainingTime = data.timer;
-    console.log(countdown);
-    clearInterval(countdown);
-
-    var countdown = setInterval(() => {
-      console.log(remainingTime);
-      remainingTime--;
-      io.emit("updateTime", { timer: remainingTime });
-    }, 1000);
-    // setTimeout(() => {
-    //   io.emit("updateTime", { timer: data.timer - 1 });
-    // }, 10000);
+    countdown(data);
   });
 
   socket.on("mouseUp", data => {
