@@ -34,7 +34,7 @@ countdown = data => {
     interval = setInterval(() => {
       remainingTime--;
       io.emit("updateTime", { timer: remainingTime });
-    }, 3000);
+    }, 60000);
   }
 };
 
