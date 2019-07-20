@@ -5,15 +5,18 @@ import "./App.css";
 
 class App extends React.Component {
   state = {
-    brightness: 0,
-    timer: 0
+    brightness: "0",
+    timer: "0"
   };
 
   componentDidMount() {
     this.socket = socketIO("192.168.178.65:4001"); //establish socket
+
     this.socket.on("loadstate", data => {
-      this.setState({ brightness: data.brightness });
-    }); // get initial brightness from server
+      console.log(data);
+      this.setState({ brightness: data.brightness, timer: data.timer });
+    }); // get initial brightness and time from server
+
     this.socket.on("updateTime", data => {
       this.setState({ timer: data.timer });
     });
@@ -25,28 +28,39 @@ class App extends React.Component {
       this.setState({ brightness: e.target.value });
     } // send adjusted brightness to server and set state
     else {
+      //update label during input
       this.setState({ timer: e.target.value });
     }
   };
   MouseUp = e => {
     this.socket.emit("mouseUp");
-  }; // tell server to update clients
+  }; // update other clients after finished update
 
   timer = e => {
-    if (e.target.value !== "0" && this.state.brightness === "0") {
-      this.setState({ brightness: "255" });
-    } else if (e.target.value === "0") {
-      this.setState({ brightness: "0" });
-    }
-
-    var time = e.target.value;
-
-    setTimeout(() => {
+    //start timer after sl
+    const emitTimer = () => {
+      // handle emit with right state
+      // function call in setState to guarantee changed state
       this.socket.emit("timer", {
-        timer: time,
+        timer: remTime,
         brightness: this.state.brightness
       });
-    }, 50);
+    };
+
+    var remTime = e.target.value; // val from slider
+    if (remTime !== "0" && this.state.brightness === "0") {
+      //if timer is started with bright =  0, set bright to 100
+      this.setState({ brightness: "255" }, () => {
+        emitTimer();
+      });
+    } else if (remTime === "0") {
+      // if timer is set to 0 , turn off (bright = 0)
+      this.setState({ brightness: "0" }, () => {
+        emitTimer();
+      });
+    } else {
+      emitTimer();
+    }
   };
 
   render() {
@@ -80,9 +94,9 @@ class App extends React.Component {
             className="slider"
             min="0"
             max="120"
+            onChange={this.handleChange}
             onMouseUp={this.timer}
             onTouchEnd={this.timer}
-            onChange={this.handleChange}
             value={this.state.timer}
           />
         </div>

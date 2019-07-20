@@ -11,58 +11,58 @@ const server = http.createServer(app);
 const io = socketIO(server);
 
 LED = new Gpio(17, { mode: Gpio.OUTPUT });
-
-var brightness = "0";
-var remainigTime;
+let brightness = "0";
+let remainingTime = "0";
 
 countdown = data => {
-  var remainingTime = data.timer;
-  var brightness = data.brightness;
+  remainingTime = data.timer;
+  brightness = data.brightness;
 
-  console.log("bright node", brightness);
-  // instant off when draggin slider to zero
-  if (Number(remainingTime) < 1) {
+  if (remainingTime == 0) {
+    // instant off when draggin slider to zero
     LED.pwmWrite(0);
-  } else {
-    LED.pwmWrite(Number(brightness));
-  }
-
-  //clear previous intervalls if existant
-  if (typeof interval !== "undefined") {
     clearInterval(interval);
-  }
+  } else {
+    //set bright to val from state
+    LED.pwmWrite(Number(brightness));
 
-  interval = setInterval(() => {
-    remainingTime--;
-
-    if (Number(remainingTime) < 1) {
+    //clear previous intervalls if existant
+    if (typeof interval !== "undefined") {
       clearInterval(interval);
-      LED.pwmWrite(0);
-      io.emit("loadstate", { brightness: "0" });
     }
-
-    if (remainingTime < 0) {
-      remainingTime = 0;
-    }
-
-    io.emit("updateTime", { timer: remainingTime });
-  }, 60000);
+    //respond every minute with a minute less, sketchy ?
+    interval = setInterval(() => {
+      remainingTime--;
+      io.emit("updateTime", { timer: remainingTime });
+    }, 3000);
+  }
 };
 
 io.on("connection", socket => {
-  socket.emit("loadstate", { brightness: brightness });
+  //set initial on connect
+  io.emit("loadstate", { brightness: brightness, timer: remainingTime });
 
+  //adjust led
   socket.on("handleChange", data => {
     brightness = data.brightness;
-    LED.pwmWrite(data.brightness);
+    LED.pwmWrite(brightness);
   });
 
+  //update other clients on change in bright
+  socket.on("mouseUp", data => {
+    socket.broadcast.emit("loadstate", {
+      brightness: brightness,
+      timer: remainingTime
+    });
+  });
+
+  //handle timer and update other clients on change in timer
   socket.on("timer", data => {
     countdown(data);
-  });
-
-  socket.on("mouseUp", data => {
-    io.emit("loadstate", { brightness: brightness });
+    socket.broadcast.emit("loadstate", {
+      brightness: brightness,
+      timer: remainingTime
+    });
   });
 });
 
