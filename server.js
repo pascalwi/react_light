@@ -40,7 +40,7 @@ countdown = data => {
         clearInterval(interval);
       }
       io.emit("updateTime", { timer: remainingTime });
-    }, 1000);
+    }, 60000);
   }
 };
 
