@@ -5,7 +5,10 @@ const Gpio = require("pigpio").Gpio;
 const index = require("./index");
 
 const app = express();
-app.use(index);
+
+//use the react build
+app.use(express.static(`${__dirname}/build`));
+
 const server = http.createServer(app);
 
 const io = socketIO(server);
