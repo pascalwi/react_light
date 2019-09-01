@@ -2,7 +2,6 @@ const http = require("http");
 const express = require("express");
 const socketIO = require("socket.io");
 const Gpio = require("pigpio").Gpio;
-const index = require("./index");
 
 const app = express();
 
@@ -37,10 +36,11 @@ countdown = data => {
       remainingTime--;
       if (remainingTime == 0) {
         LED.pwmWrite(0);
+        io.emit("loadstate", { brightness: 0, timer: 0 });
         clearInterval(interval);
       }
       io.emit("updateTime", { timer: remainingTime });
-    }, 60000);
+    }, 1000);
   }
 };
 
