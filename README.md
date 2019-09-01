@@ -1,5 +1,6 @@
 ## start server
-sudo node server.js<br>
+first time: yarn build <br>
+then: sudo node server.js<br>
 listens on port 4001
 
 -----------
