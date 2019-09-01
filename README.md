@@ -1,6 +1,6 @@
-##start server
-node server.js
-yarn start
+### 'start server'
+sudo node server.js
+serve -s build
 -----------
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 

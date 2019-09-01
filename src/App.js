@@ -18,7 +18,11 @@ class App extends React.Component {
     }); // get initial brightness and time from server
 
     this.socket.on("updateTime", data => {
-      this.setState({ timer: data.timer });
+      this.setState({ timer: data.timer }, () => {
+        if (this.state.timer === 0) {
+          this.setState({ brightness: "0" });
+        }
+      });
     });
   }
 

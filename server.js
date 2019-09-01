@@ -17,7 +17,6 @@ let remainingTime = "0";
 countdown = data => {
   remainingTime = data.timer;
   brightness = data.brightness;
-
   if (remainingTime == 0) {
     // instant off when draggin slider to zero
     LED.pwmWrite(0);
@@ -33,6 +32,10 @@ countdown = data => {
     //respond every minute with a minute less, sketchy ?
     interval = setInterval(() => {
       remainingTime--;
+      if (remainingTime == 0) {
+        LED.pwmWrite(0);
+        clearInterval(interval);
+      }
       io.emit("updateTime", { timer: remainingTime });
     }, 60000);
   }
